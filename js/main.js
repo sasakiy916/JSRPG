@@ -65,7 +65,7 @@ window.onload = () => {
                     while (commands.lastChild) {
                         commands.removeChild(commands.lastChild);
                     }
-                    commands.textContent = "行動を選択せよふ";
+                    commands.textContent = "";
                 });
             }
         });

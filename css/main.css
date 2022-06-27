@@ -30,3 +30,11 @@
 #player {
     display: flex;
 }
+
+.character {
+    width: 110px;
+}
+
+.character+.character {
+    margin-left: 10px;
+}
