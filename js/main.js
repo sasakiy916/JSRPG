@@ -1,3 +1,4 @@
+'use strict';
 window.onload=()=>{
     const enemy=document.getElementById("enemies");
     const eTable=document.getElementById("eTable");
@@ -11,14 +12,11 @@ window.onload=()=>{
     "私のこと好きなの？",
     "許さない"];
     class Enemy{
-        constructer(name,hp,mp,atk){
+        constructor(name,hp=10,mp=10,atk=10){
             this.name = name;
             this.hp = hp;
             this.mp = mp;
             this.atk = atk;
-        }
-        getName(){
-            return this.hp;
         }
     }
     class Player{
@@ -29,16 +27,18 @@ window.onload=()=>{
             this.atk = atk;
         }
     }
-    let e1 = new Enemy("ああああ",1450,50);
-    let character = document.createElement("div");
-    character.classList.add("character");
-    character.textContent("text");
-    enemy.append(character);
+    //敵追加
+    let e1 = new Enemy("name");
+    console.log(e1);
+    let mob = document.createElement("div");
+    mob.classList.add("character");
+    // character.textContent("text");
+    enemy.append(mob);
+    mob.innerHTML = `名前:${e1.name}<br>HP:${e1.hp}`;
 
     let index = 0;
     commands.addEventListener("click",(c)=>{
-        console.log("click");
-        idx = index++%text.length;
+        let idx = index++%text.length;
         c.target.textContent = text[idx];
         if(idx===text.length-1){
             c.target.style.color="red";
@@ -54,5 +54,5 @@ window.onload=()=>{
         btn[0].addEventListener("click",()=>{
 
         });
-    }
+    };
 };
