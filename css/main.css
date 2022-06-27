@@ -1,25 +1,32 @@
-#commands{
+#commands {
     border: 1px solid #333;
 }
-#commandBtn{
+
+#commandBtn {
     border-right: 2px solid #333;
-    padding:10px;
+    padding: 10px;
 }
-#commandBtn .btn{
-    width:100px;
+
+#commandBtn .btn {
+    width: 100px;
 }
-#text{
+
+#text {
     display: flex;
     border: 1px solid #333;
 }
-.text{
+
+.text {
     display: flex;
     border: 1px solid #333;
 }
-#textWindow{
+
+#textWindow {
     width: 100%;
     padding: 5px;
 }
-#enemies{
+
+#enemies,
+#player {
     display: flex;
 }
