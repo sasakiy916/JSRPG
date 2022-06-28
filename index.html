@@ -11,9 +11,14 @@
 
 <body>
     <div id="container">
-        <div id="enemies"></div>
-        <canvas id="cvs"></canvas>
-        <div id="player"></div>
+        <div id="battleInfo">
+            <div id="characterInfo">
+                <div id="enemies"></div>
+                <canvas id="cvs"></canvas>
+                <div id="player"></div>
+            </div>
+            <div id="turn"></div>
+        </div>
         <div class="text">
             <div id="commandBtn">
                 <button id="attack" class="btn">攻撃</button><br>
@@ -25,7 +30,6 @@
                 行動を選択せよふ
             </div>
         </div>
-        <div id="turn"></div>
     </div>
     <script src="js/main.js"></script>
 </body>

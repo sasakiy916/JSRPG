@@ -38,3 +38,11 @@
 .character+.character {
     margin-left: 10px;
 }
+
+#battleInfo {
+    display: flex;
+}
+
+#turn {
+    margin-left: 30px;
+}
