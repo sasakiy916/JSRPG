@@ -1,41 +1,47 @@
+'use strict';
+const blockSize = 50;//1マスの大きさ
+const boardRow = 5;//行
+const boardCol = 10;//列
 //キャンバス用意
-const blockSize = 50;
-const boardRow = 5;
-const boardCol = 10;
-const cvs = document.getElementById("cvs");
-const ctx = cvs.getContext("2d");
-const canvasW = blockSize * boardCol;
-const canvasH = blockSize * boardRow;
-cvs.width = canvasW;
-cvs.height = canvasH;
+const cvs = document.getElementById("cvs");//キャンバス読み込み
+const ctx = cvs.getContext("2d");//コンテキスト用意
+//キャンバスの大きさ設定
+cvs.width = blockSize * boardCol;//幅
+cvs.height = blockSize * boardRow;//高さ
 let imgs = [];
 const board = [];
-//描画処理 作成中
-const draw = () => {
-    ctx.strokeStyle = "black";
+for (let y = 0; y < boardRow; y++) {
+    board[y] = [];
+    for (let x = 0; x < boardCol; x++) {
+        board[y][x] = 0;
+    }
+}
+//キャラ画像読み込み
+const loadImages = (turn) => {
+    for (let i = 0; i < turn.length; i++) {
+        //画像パス用意
+        imgs.push(new Image());
+        imgs[i].src = "./images/" + turn[i].img;
+    }
+    //画像読み込み
+    for (let i = 0; i < turn.length; i++) {
+        // if (y === turn[i].posY && turn[i].posX === x) {
+        imgs[i].onload = () => {
+            ctx.drawImage(imgs[i], turn[i].posX * blockSize, turn[i].posY * blockSize, blockSize, blockSize);
+            board[turn[i].posY][turn[i].posX] = 1;
+        };
+        // }
+    }
+};
+//グリッド線描画
+const drawGrid = () => {
+    ctx.strokeStyle = "black";//線の色
     for (let y = 0; y < boardRow; y++) {
         for (let x = 0; x < boardCol; x++) {
             let px = x * blockSize;
             let py = y * blockSize;
             //グリッド線表示
             ctx.strokeRect(px, py, blockSize, blockSize);
-        }
-    }
-};
-//キャラ画像描画
-const drawCharacter = (turn) => {
-    for (let y = 0; y < boardRow; y++) {
-        for (let x = 0; x < boardCol; x++) {
-            let px = x * blockSize;
-            let py = y * blockSize;
-            //画像表示
-            for (let i = 0; i < turn.length; i++) {
-                if (y === turn[i].posY && turn[i].posX === x) {
-                    imgs[i].onload = () => {
-                        ctx.drawImage(imgs[i], px, py, blockSize, blockSize);
-                    };
-                }
-            }
         }
     }
 };

@@ -1,47 +1,7 @@
 'use strict';
 window.onload = () => {
-    // //キャンバス用意
-    // const blockSize = 50;
-    // const boardRow = 5;
-    // const boardCol = 10;
-    // const cvs = document.getElementById("cvs");
-    // const ctx = cvs.getContext("2d");
-    // const canvasW = blockSize * boardCol;
-    // const canvasH = blockSize * boardRow;
-    // cvs.width = canvasW;
-    // cvs.height = canvasH;
-    // let imgs = [];
-    // const board = [];
-    // //描画処理 作成中
-    // const draw = () => {
-    //     ctx.strokeStyle = "black";
-    //     for (let y = 0; y < boardRow; y++) {
-    //         for (let x = 0; x < boardCol; x++) {
-    //             let px = x * blockSize;
-    //             let py = y * blockSize;
-    //             //グリッド線表示
-    //             ctx.strokeRect(px, py, blockSize, blockSize);
-    //         }
-    //     }
-    // };
-    // //キャラ画像描画
-    // const drawCharacter = (turn) => {
-    //     for (let y = 0; y < boardRow; y++) {
-    //         for (let x = 0; x < boardCol; x++) {
-    //             let px = x * blockSize;
-    //             let py = y * blockSize;
-    //             //画像表示
-    //             for (let i = 0; i < turn.length; i++) {
-    //                 if (y === turn[i].posY && turn[i].posX === x) {
-    //                     imgs[i].onload = () => {
-    //                         ctx.drawImage(imgs[i], px, py, blockSize, blockSize);
-    //                     };
-    //                 }
-    //             }
-    //         }
-    //     }
-    // };
-    draw();
+    //グリッド線描画
+    drawGrid();
 
     const enemy = document.getElementById("enemies");
     const player = document.getElementById("player");
@@ -140,16 +100,12 @@ window.onload = () => {
         }
         let dareka = 0;
         let turn = decideAttackTurn();
+        //キャラ画像読み込み
+        loadImages(turn);
+        //キャラの位置を設定
         for (let i = 0; i < turn.length; i++) {
             turn[i].setPos(characterPos[i][1], characterPos[i][0]);
         }
-        for (let i = 0; i < turn.length; i++) {
-            //画像用意
-            imgs.push(new Image());
-            imgs[i].src = "./images/" + turn[i].img;
-        }
-        //キャラをキャンバスに描画
-        drawCharacter(turn);
         //どのキャラの順番か表示
         const showTurn = (dareka) => {
             turnDom.innerHTML = `〇攻撃順<br>`;
@@ -174,26 +130,42 @@ window.onload = () => {
         showTurn(dareka);
         //キーの入力(条件式は仮)
         document.onkeydown = (e) => {
-            let cpx = turn[dareka].posX * blockSize;
-            let cpy = turn[dareka].posY * blockSize;
+            //現在の座標取得
+            let tpx = turn[dareka].posX;
+            let tpy = turn[dareka].posY;
+            //現在位置の描画削除
+            let cpx = tpx * blockSize;
+            let cpy = tpy * blockSize;
             ctx.clearRect(cpx, cpy, blockSize, blockSize);
-            ctx.strokeStyle = "black";
+            //グリッド線再描画
             ctx.strokeRect(cpx, cpy, blockSize, blockSize);
             // if (false) return;
             switch (e.keyCode) {
                 case 37://左
-                    if (turn[dareka].posX - 1 >= 0) turn[dareka].posX--;
+                    if (tpx - 1 >= 0 && board[tpy][tpx - 1] === 0) {
+                        turn[dareka].posX--;
+                    }
                     break;
                 case 38://上
-                    if (turn[dareka].posY - 1 >= 0) turn[dareka].posY--;
+                    if (tpy - 1 >= 0 && board[tpy - 1][tpx] === 0) {
+                        turn[dareka].posY--;
+                    }
                     break;
                 case 39://右
-                    if (turn[dareka].posX + 1 < boardCol) turn[dareka].posX++;
+                    if (tpx + 1 < boardCol && board[tpy][tpx + 1] === 0) {
+                        turn[dareka].posX++;
+                    }
                     break;
                 case 40://下
-                    if (turn[dareka].posY + 1 < boardRow) turn[dareka].posY++;
+                    if (tpy + 1 < boardRow && board[tpy + 1][tpx] === 0) {
+                        turn[dareka].posY++;
+                    }
                     break;
             }
+            //ボード更新
+            board[tpy][tpx] = 0;
+            board[turn[dareka].posY][turn[dareka].posX] = 1;
+            //移動後の座標に画像描画
             cpx = turn[dareka].posX * blockSize;
             cpy = turn[dareka].posY * blockSize;
             ctx.drawImage(imgs[dareka], cpx, cpy, blockSize, blockSize);
