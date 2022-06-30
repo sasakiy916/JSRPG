@@ -18,19 +18,17 @@ for (let y = 0; y < boardRow; y++) {
 }
 //キャラ画像読み込み
 const loadImages = (turn) => {
+    //画像パス用意
     for (let i = 0; i < turn.length; i++) {
-        //画像パス用意
         imgs.push(new Image());
         imgs[i].src = "./images/" + turn[i].img;
     }
     //画像読み込み
     for (let i = 0; i < turn.length; i++) {
-        // if (y === turn[i].posY && turn[i].posX === x) {
         imgs[i].onload = () => {
             ctx.drawImage(imgs[i], turn[i].posX * blockSize, turn[i].posY * blockSize, blockSize, blockSize);
             board[turn[i].posY][turn[i].posX] = 1;
         };
-        // }
     }
 };
 //グリッド線描画
