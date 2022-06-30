@@ -191,7 +191,7 @@ window.onload = () => {
       cpx = turn[dareka].posX * blockSize;
       cpy = turn[dareka].posY * blockSize;
       ctx.drawImage(imgs[dareka], cpx, cpy, blockSize, blockSize);
-      addSelectButton(target, turn[dareka]);
+      addSelectButton(target, turn[dareka], dareka);
     };
     let party;
     // let target;
@@ -209,7 +209,7 @@ window.onload = () => {
         targetDOM = player;
       }
       //選択用のボタン追加
-      addSelectButton(target, turn[dareka]);
+      addSelectButton(target, turn[dareka], dareka);
       //攻撃対象用
       let index = 0;
       for (let c of commands.children) {
@@ -275,7 +275,7 @@ window.onload = () => {
     }
   }
   //攻撃時の選択ボタン
-  function addSelectButton(party, turn) {
+  function addSelectButton(party, turn, dareka) {
     //テキストを空にする
     commands.textContent = "";
     console.log(turn.name);
@@ -284,40 +284,24 @@ window.onload = () => {
       //HPが残ってる場合
       console.log(party[i].name);
       if (party[i].hp > 0) {
-        // if (
-        //     turn.posX + turn.hitDir >= party[i].posX - turn.posX + 1 &&
-        //     turn.posX - turn.hitDir <= party[i].posX + turn.posX - 1 &&
-        //     turn.posY + turn.hitDir >= party[i].posY - turn.posY + 1 &&
-        //     turn.posY - turn.hitDir <= party[i].posY + turn.posY - 1
-        // ) {
-        // if (
-        //   (party[i].posX - turn.posX > 0 &&
-        //     party[i].posX - (turn.posX + turn.hitDir) <= 0) ||
-        //   (party[i].posX - turn.posX < 0 &&
-        //     party[i].posX + (turn.posX - turn.hitDir) <= 0) ||
-        //   (party[i].posY - turn.posY > 0 &&
-        //     party[i].posY - (turn.posY + turn.hitDir) <= 0) ||
-        //   (party[i].posY - turn.posY < 0 &&
-        //     party[i].posY + (turn.posY - turn.hitDir) <= 0)
-        // ) {
+        console.log(turn.name);
         for (
           let y = turn.posY - turn.hitDir;
-          y < turn.posY + turn.hitDir;
+          y <= turn.posY + turn.hitDir;
           y++
         ) {
           for (
             let x = turn.posX - turn.hitDir;
-            x < turn.posX + turn.hitDir;
+            x <= turn.posX + turn.hitDir;
             x++
           ) {
             if (
               x >= 0 &&
               y >= 0 &&
-              board[y][x] &&
+              board[y][x] === 1 &&
               party[i].posX === x &&
               party[i].posY === y
             ) {
-              console.log(x + ":" + y);
               const button = document.createElement("button");
               button.value = i;
               button.textContent = `${party[i].name}`;
@@ -325,12 +309,6 @@ window.onload = () => {
             }
           }
         }
-        // if (true) {
-        //   const button = document.createElement("button");
-        //   button.value = i;
-        //   button.textContent = `${party[i].name}`;
-        //   commands.append(button);
-        // }
       }
     }
   }
