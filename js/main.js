@@ -244,6 +244,35 @@ window.onload = () => {
         });
       }
     }); //攻撃ボタンここまで
+    const atkBtn = (e) => {
+      //攻撃対象決定
+      index = e.target.value;
+      //攻撃(HPを減らす)
+      turn[dareka++].attack(target[index]);
+      if (target[index].hp <= 0) target[index].status = "dead";
+      if (dareka >= turn.length) dareka = 0;
+      const character = targetDOM.getElementsByClassName("character");
+      //子要素全削除
+      while (targetDOM.lastChild) {
+        targetDOM.removeChild(targetDOM.lastChild);
+      }
+      //更新後のパーティ情報を再表示
+      addPartyMember(target, targetDOM);
+      //選択ボタン削除
+      while (commands.lastChild) {
+        commands.removeChild(commands.lastChild);
+      }
+      commands.innerHTML = "行動選択";
+      //次ターンのキャラがやられてたら次のキャラへ
+      while (turn[dareka].status === "dead") {
+        if (dareka >= turn.length - 1) {
+          dareka = 0;
+        } else {
+          dareka++;
+        }
+      }
+      showTurn(dareka);
+    };
     //itemボタン
     itemBtn.addEventListener("click", () => {
       textWindow.innerHTML = "そんなモノは無い!";
