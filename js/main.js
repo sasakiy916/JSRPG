@@ -15,6 +15,7 @@ window.onload = () => {
     posX = 0; //x座標
     posY = 0; //y座標
     hitDir = 2; //射程
+    moveDir = 2; //移動距離
     status = "alive"; //生死判定（alive,dead）
     constructor(name, img, hp = 10, mp = 10, atk = 10, speed = 10) {
       this.name = name;
@@ -74,6 +75,7 @@ window.onload = () => {
 
   //戦闘システム
   function battleManager() {
+    let target; //テスト中
     //攻撃順決定
     const decideAttackTurn = () => {
       let junban = [];
@@ -105,11 +107,15 @@ window.onload = () => {
       turn[i].setPos(characterPos[i][1], characterPos[i][0]);
     }
     //どのキャラの順番か表示
+    let turnPosX;
+    let turnPosY;
     const showTurn = (dareka) => {
       turnDom.innerHTML = `〇攻撃順<br>`;
       let current = "";
       let turnDiv = "<div>";
       let span = "";
+      //ターン開始時の座標保存
+      [turnPosX, turnPosY] = [turn[dareka].posX, turn[dareka].posY];
       for (let i = 0; i < turn.length; i++) {
         if (turn[i] instanceof Player) {
           span = "<span style='color:blue;'>";
@@ -142,22 +148,38 @@ window.onload = () => {
       // if (false) return;
       switch (e.keyCode) {
         case 37: //左
-          if (tpx - 1 >= 0 && board[tpy][tpx - 1] === 0) {
+          if (
+            tpx - 1 >= 0 &&
+            tpx - 1 >= turnPosX - turn[dareka].moveDir &&
+            board[tpy][tpx - 1] === 0
+          ) {
             turn[dareka].posX--;
           }
           break;
         case 38: //上
-          if (tpy - 1 >= 0 && board[tpy - 1][tpx] === 0) {
+          if (
+            tpy - 1 >= 0 &&
+            tpy - 1 >= turnPosY - turn[dareka].moveDir &&
+            board[tpy - 1][tpx] === 0
+          ) {
             turn[dareka].posY--;
           }
           break;
         case 39: //右
-          if (tpx + 1 < boardCol && board[tpy][tpx + 1] === 0) {
+          if (
+            tpx + 1 < boardCol &&
+            tpx + 1 <= turnPosX + turn[dareka].moveDir &&
+            board[tpy][tpx + 1] === 0
+          ) {
             turn[dareka].posX++;
           }
           break;
         case 40: //下
-          if (tpy + 1 < boardRow && board[tpy + 1][tpx] === 0) {
+          if (
+            tpy + 1 < boardRow &&
+            tpy + 1 <= turnPosY + turn[dareka].moveDir &&
+            board[tpy + 1][tpx] === 0
+          ) {
             turn[dareka].posY++;
           }
           break;
@@ -169,9 +191,10 @@ window.onload = () => {
       cpx = turn[dareka].posX * blockSize;
       cpy = turn[dareka].posY * blockSize;
       ctx.drawImage(imgs[dareka], cpx, cpy, blockSize, blockSize);
+      addSelectButton(target, turn[dareka]);
     };
     let party;
-    let target;
+    // let target;
     let targetDOM;
     //攻撃ボタン押した時
     attackBtn.addEventListener("click", (e) => {
@@ -186,7 +209,7 @@ window.onload = () => {
         targetDOM = player;
       }
       //選択用のボタン追加
-      addSelectButton(target);
+      addSelectButton(target, turn[dareka]);
       //攻撃対象用
       let index = 0;
       for (let c of commands.children) {
@@ -252,17 +275,62 @@ window.onload = () => {
     }
   }
   //攻撃時の選択ボタン
-  function addSelectButton(party) {
+  function addSelectButton(party, turn) {
     //テキストを空にする
     commands.textContent = "";
+    console.log(turn.name);
     //選択肢のボタン追加
     for (let i = 0; i < party.length; i++) {
       //HPが残ってる場合
+      console.log(party[i].name);
       if (party[i].hp > 0) {
-        const button = document.createElement("button");
-        button.value = i;
-        button.textContent = `${party[i].name}`;
-        commands.append(button);
+        // if (
+        //     turn.posX + turn.hitDir >= party[i].posX - turn.posX + 1 &&
+        //     turn.posX - turn.hitDir <= party[i].posX + turn.posX - 1 &&
+        //     turn.posY + turn.hitDir >= party[i].posY - turn.posY + 1 &&
+        //     turn.posY - turn.hitDir <= party[i].posY + turn.posY - 1
+        // ) {
+        // if (
+        //   (party[i].posX - turn.posX > 0 &&
+        //     party[i].posX - (turn.posX + turn.hitDir) <= 0) ||
+        //   (party[i].posX - turn.posX < 0 &&
+        //     party[i].posX + (turn.posX - turn.hitDir) <= 0) ||
+        //   (party[i].posY - turn.posY > 0 &&
+        //     party[i].posY - (turn.posY + turn.hitDir) <= 0) ||
+        //   (party[i].posY - turn.posY < 0 &&
+        //     party[i].posY + (turn.posY - turn.hitDir) <= 0)
+        // ) {
+        for (
+          let y = turn.posY - turn.hitDir;
+          y < turn.posY + turn.hitDir;
+          y++
+        ) {
+          for (
+            let x = turn.posX - turn.hitDir;
+            x < turn.posX + turn.hitDir;
+            x++
+          ) {
+            if (
+              x >= 0 &&
+              y >= 0 &&
+              board[y][x] &&
+              party[i].posX === x &&
+              party[i].posY === y
+            ) {
+              console.log(x + ":" + y);
+              const button = document.createElement("button");
+              button.value = i;
+              button.textContent = `${party[i].name}`;
+              commands.append(button);
+            }
+          }
+        }
+        // if (true) {
+        //   const button = document.createElement("button");
+        //   button.value = i;
+        //   button.textContent = `${party[i].name}`;
+        //   commands.append(button);
+        // }
       }
     }
   }
