@@ -3,48 +3,15 @@ window.onload = () => {
   const enemy = document.getElementById("enemies");
   const player = document.getElementById("player");
   const commands = document.getElementById("textWindow");
+  //ボタン関連DOM
   const btn = document.getElementsByClassName("btn");
   const attackBtn = document.getElementById("attack");
   const itemBtn = document.getElementById("item");
   const magicBtn = document.getElementById("magic");
   const runBtn = document.getElementById("run");
+  //攻撃順
   const turnDom = document.getElementById("turn");
 
-  //クラス
-  class Character {
-    posX = 0; //x座標
-    posY = 0; //y座標
-    hitDir = 2; //射程
-    moveDir = 2; //移動距離
-    status = "alive"; //生死判定（alive,dead）
-    constructor(name, img, hp = 10, mp = 10, atk = 10, speed = 10) {
-      this.name = name;
-      this.img = img;
-      this.hp = hp;
-      this.mp = mp;
-      this.atk = atk;
-      this.speed = speed;
-    }
-
-    setPos = (x, y) => {
-      this.posX = x;
-      this.posY = y;
-    };
-    attack = (enemy) => {
-      enemy.hp -= this.atk;
-      if (enemy.hp < 0) {
-        enemy.hp = 0;
-      }
-    };
-    hitOK = (enemy) => {
-      if (hitDir > Math.abs(enemy.posX - this.posX)) {
-        return true;
-      }
-      return false;
-    };
-  }
-  class Enemy extends Character {}
-  class Player extends Character {}
   //味方追加
   let playerParty = [
     new Player("騎士", "knight.png", 100, 20, 30, 100),
@@ -76,30 +43,9 @@ window.onload = () => {
   //戦闘システム
   function battleManager() {
     let target; //テスト中
-    //攻撃順決定
-    const decideAttackTurn = () => {
-      let junban = [];
-      //配列に追加
-      for (let p of playerParty) {
-        junban.push(p);
-      }
-      for (let e of enemyParty) {
-        junban.push(e);
-      }
-      //speedの高い順に入れ替え
-      for (let i = 0; i < junban.length - 1; i++) {
-        for (let j = i + 1; j < junban.length; j++) {
-          if (junban[i].speed < junban[j].speed) {
-            let temp = junban[i];
-            junban[i] = junban[j];
-            junban[j] = temp;
-          }
-        }
-      }
-      return junban;
-    };
     let dareka = 0;
-    let turn = decideAttackTurn();
+    //攻撃順決定
+    let turn = decideAttackTurn(playerParty, enemyParty);
     //キャラ画像読み込み
     loadImages(turn);
     //キャラの位置を設定
