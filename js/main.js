@@ -48,7 +48,7 @@ window.onload = () => {
     let turn = decideAttackTurn(playerParty, enemyParty);
     //キャラ画像読み込み
     loadImages(turn);
-    //キャラの位置を設定
+    //キャラの初期座標を設定
     for (let i = 0; i < turn.length; i++) {
       turn[i].setPos(characterPos[i][1], characterPos[i][0]);
     }
@@ -72,9 +72,8 @@ window.onload = () => {
           current = "←";
           turnDiv = "<div style='border:2px solid red;'>";
         }
-        turnDom.innerHTML += `${turnDiv}${i + 1}.${span}${
-          turn[i].name
-        }</spna>${current}</div>`;
+        turnDom.innerHTML += `${turnDiv}${i + 1}.${span}${turn[i].name
+          }</spna>${current}</div>`;
         current = "";
         turnDiv = "<div>";
       }
@@ -82,6 +81,10 @@ window.onload = () => {
     showTurn(dareka);
     //キーの入力(条件式は仮)
     document.onkeydown = (e) => {
+      //e.key,e.codeの内容確認
+      // console.log(e.key);
+      // console.log(e.code);
+
       //現在の座標取得
       let tpx = turn[dareka].posX;
       let tpy = turn[dareka].posY;
@@ -92,8 +95,8 @@ window.onload = () => {
       //グリッド線再描画
       ctx.strokeRect(cpx, cpy, blockSize, blockSize);
       // if (false) return;
-      switch (e.keyCode) {
-        case 37: //左
+      switch (e.key) {
+        case "ArrowLeft": //左
           if (
             tpx - 1 >= 0 &&
             tpx - 1 >= turnPosX - turn[dareka].moveDir &&
@@ -102,7 +105,7 @@ window.onload = () => {
             turn[dareka].posX--;
           }
           break;
-        case 38: //上
+        case "ArrowUp": //上
           if (
             tpy - 1 >= 0 &&
             tpy - 1 >= turnPosY - turn[dareka].moveDir &&
@@ -111,7 +114,7 @@ window.onload = () => {
             turn[dareka].posY--;
           }
           break;
-        case 39: //右
+        case "ArrowRight": //右
           if (
             tpx + 1 < boardCol &&
             tpx + 1 <= turnPosX + turn[dareka].moveDir &&
@@ -120,7 +123,7 @@ window.onload = () => {
             turn[dareka].posX++;
           }
           break;
-        case 40: //下
+        case "ArrowDown": //下
           if (
             tpy + 1 < boardRow &&
             tpy + 1 <= turnPosY + turn[dareka].moveDir &&
