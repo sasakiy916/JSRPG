@@ -42,7 +42,9 @@ window.onload = () => {
 
   //戦闘システム
   function battleManager() {
-    let target; //テスト中
+    let target; //テスト中 攻撃相手のパーティ
+    let party;//テスト 攻撃番のパーティ
+    let targetDOM;//テスト
     let dareka = 0;
     //攻撃順決定
     let turn = decideAttackTurn(playerParty, enemyParty);
@@ -56,6 +58,15 @@ window.onload = () => {
     let turnPosX;
     let turnPosY;
     const showTurn = (dareka) => {
+      if (turn[dareka] instanceof Player) {
+        party = playerParty;
+        target = enemyParty;
+        targetDOM = enemy;
+      } else {
+        party = enemyParty;
+        target = playerParty;
+        targetDOM = player;
+      }
       turnDom.innerHTML = `〇攻撃順<br>`;
       let current = "";
       let turnDiv = "<div>";
@@ -140,23 +151,12 @@ window.onload = () => {
       cpx = turn[dareka].posX * blockSize;
       cpy = turn[dareka].posY * blockSize;
       ctx.drawImage(imgs[dareka], cpx, cpy, blockSize, blockSize);
+      console.log(target);
       addSelectButton(target, turn[dareka], dareka);
     };
-    let party;
-    // let target;
-    let targetDOM;
     //攻撃ボタン押した時
     attackBtn.addEventListener("click", (e) => {
       //テスト中
-      if (turn[dareka] instanceof Player) {
-        party = playerParty;
-        target = enemyParty;
-        targetDOM = enemy;
-      } else {
-        party = enemyParty;
-        target = playerParty;
-        targetDOM = player;
-      }
       //選択用のボタン追加
       addSelectButton(target, turn[dareka], dareka);
       //攻撃対象用
@@ -167,9 +167,9 @@ window.onload = () => {
           index = e.target.value;
           //攻撃(HPを減らす)
           turn[dareka++].attack(target[index]);
-          if (target[index].hp <= 0) target[index].status = "dead";
+          // if (target[index].hp <= 0) target[index].status = "dead";
           if (dareka >= turn.length) dareka = 0;
-          const character = targetDOM.getElementsByClassName("character");
+          // const character = targetDOM.getElementsByClassName("character");
           //子要素全削除
           while (targetDOM.lastChild) {
             targetDOM.removeChild(targetDOM.lastChild);
@@ -193,35 +193,6 @@ window.onload = () => {
         });
       }
     }); //攻撃ボタンここまで
-    const atkBtn = (e) => {
-      //攻撃対象決定
-      index = e.target.value;
-      //攻撃(HPを減らす)
-      turn[dareka++].attack(target[index]);
-      if (target[index].hp <= 0) target[index].status = "dead";
-      if (dareka >= turn.length) dareka = 0;
-      const character = targetDOM.getElementsByClassName("character");
-      //子要素全削除
-      while (targetDOM.lastChild) {
-        targetDOM.removeChild(targetDOM.lastChild);
-      }
-      //更新後のパーティ情報を再表示
-      addPartyMember(target, targetDOM);
-      //選択ボタン削除
-      while (commands.lastChild) {
-        commands.removeChild(commands.lastChild);
-      }
-      commands.innerHTML = "行動選択";
-      //次ターンのキャラがやられてたら次のキャラへ
-      while (turn[dareka].status === "dead") {
-        if (dareka >= turn.length - 1) {
-          dareka = 0;
-        } else {
-          dareka++;
-        }
-      }
-      showTurn(dareka);
-    };
     //itemボタン
     itemBtn.addEventListener("click", () => {
       textWindow.innerHTML = "そんなモノは無い!";
@@ -238,8 +209,10 @@ window.onload = () => {
   //キャラをパーティに追加
   function addPartyMember(member, party = enemy) {
     for (let m of member) {
+      //div用意
       let div = document.createElement("div");
       div.classList.add("character");
+      //キャラ画像用意
       let divImg = document.createElement("div");
       divImg.style.marginRight = "10px";
       let img = document.createElement("img");
@@ -247,20 +220,22 @@ window.onload = () => {
       img.style.width = "100px";
       img.style.height = "100px";
       divImg.append(img);
+      //パーティ表示に追加
       party.append(divImg);
       party.append(div);
+      //キャラのステータス表示
       div.innerHTML = `名前:${m.name}<br>HP:${m.hp}<br>MP:${m.mp}`;
     }
   }
   //攻撃時の選択ボタン
   function addSelectButton(party, turn, dareka) {
+    console.log(board);
+    console.log(party);
     //テキストを空にする
     commands.textContent = "";
-    console.log(turn.name);
     //選択肢のボタン追加
     for (let i = 0; i < party.length; i++) {
       //HPが残ってる場合
-      console.log(party[i].name);
       if (party[i].hp > 0) {
         console.log(turn.name);
         for (
@@ -276,9 +251,9 @@ window.onload = () => {
             if (
               x >= 0 &&
               y >= 0 &&
-              board[y][x] === 1 &&
               party[i].posX === x &&
-              party[i].posY === y
+              party[i].posY === y &&
+              board[y][x] === 1
             ) {
               const button = document.createElement("button");
               button.value = i;
@@ -289,5 +264,5 @@ window.onload = () => {
         }
       }
     }
-  }
+  }//addSelectButton ここまで
 };

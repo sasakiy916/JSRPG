@@ -2,7 +2,7 @@
 class Character {
   posX = 0; //x座標
   posY = 0; //y座標
-  hitDir = 2; //射程
+  hitDir = 4; //射程
   moveDir = 2; //移動距離
   status = "alive"; //生死判定（alive,dead）
   constructor(name, img, hp = 10, mp = 10, atk = 10, speed = 10) {
@@ -22,6 +22,7 @@ class Character {
     enemy.hp -= this.atk;
     if (enemy.hp < 0) {
       enemy.hp = 0;
+      enemy.status = "dead";
     }
   };
   hitOK = (enemy) => {
@@ -31,5 +32,5 @@ class Character {
     return false;
   };
 }
-class Enemy extends Character {}
-class Player extends Character {}
+class Enemy extends Character { }
+class Player extends Character { }
