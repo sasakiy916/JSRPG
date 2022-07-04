@@ -43,8 +43,8 @@ window.onload = () => {
   //戦闘システム
   function battleManager() {
     let target; //テスト中 攻撃相手のパーティ
-    let party;//テスト 攻撃番のパーティ
-    let targetDOM;//テスト
+    let party; //テスト 攻撃番のパーティ
+    let targetDOM; //テスト
     let dareka = 0;
     //攻撃順決定
     let turn = decideAttackTurn(playerParty, enemyParty);
@@ -83,8 +83,9 @@ window.onload = () => {
           current = "←";
           turnDiv = "<div style='border:2px solid red;'>";
         }
-        turnDom.innerHTML += `${turnDiv}${i + 1}.${span}${turn[i].name
-          }</spna>${current}</div>`;
+        turnDom.innerHTML += `${turnDiv}${i + 1}.${span}${
+          turn[i].name
+        }</spna>${current}</div>`;
         current = "";
         turnDiv = "<div>";
       }
@@ -162,37 +163,38 @@ window.onload = () => {
       //攻撃対象用
       let index = 0;
       for (let c of commands.children) {
-        c.addEventListener("click", (e) => {
-          //攻撃対象決定
-          index = e.target.value;
-          //攻撃(HPを減らす)
-          turn[dareka++].attack(target[index]);
-          // if (target[index].hp <= 0) target[index].status = "dead";
-          if (dareka >= turn.length) dareka = 0;
-          // const character = targetDOM.getElementsByClassName("character");
-          //子要素全削除
-          while (targetDOM.lastChild) {
-            targetDOM.removeChild(targetDOM.lastChild);
-          }
-          //更新後のパーティ情報を再表示
-          addPartyMember(target, targetDOM);
-          //選択ボタン削除
-          while (commands.lastChild) {
-            commands.removeChild(commands.lastChild);
-          }
-          commands.innerHTML = "行動選択";
-          //次ターンのキャラがやられてたら次のキャラへ
-          while (turn[dareka].status === "dead") {
-            if (dareka >= turn.length - 1) {
-              dareka = 0;
-            } else {
-              dareka++;
-            }
-          }
-          showTurn(dareka);
-        });
+        c.addEventListener("click", atkBtn(e));
       }
     }); //攻撃ボタンここまで
+    const atkBtn = (e) => {
+      //攻撃対象決定
+      index = e.target.value;
+      //攻撃(HPを減らす)
+      turn[dareka++].attack(target[index]);
+      // if (target[index].hp <= 0) target[index].status = "dead";
+      if (dareka >= turn.length) dareka = 0;
+      // const character = targetDOM.getElementsByClassName("character");
+      //子要素全削除
+      while (targetDOM.lastChild) {
+        targetDOM.removeChild(targetDOM.lastChild);
+      }
+      //更新後のパーティ情報を再表示
+      addPartyMember(target, targetDOM);
+      //選択ボタン削除
+      while (commands.lastChild) {
+        commands.removeChild(commands.lastChild);
+      }
+      commands.innerHTML = "行動選択";
+      //次ターンのキャラがやられてたら次のキャラへ
+      while (turn[dareka].status === "dead") {
+        if (dareka >= turn.length - 1) {
+          dareka = 0;
+        } else {
+          dareka++;
+        }
+      }
+      showTurn(dareka);
+    };
     //itemボタン
     itemBtn.addEventListener("click", () => {
       textWindow.innerHTML = "そんなモノは無い!";
@@ -258,11 +260,12 @@ window.onload = () => {
               const button = document.createElement("button");
               button.value = i;
               button.textContent = `${party[i].name}`;
+              // button.addEventListener("click", atkBtn(e));
               commands.append(button);
             }
           }
         }
       }
     }
-  }//addSelectButton ここまで
+  } //addSelectButton ここまで
 };
