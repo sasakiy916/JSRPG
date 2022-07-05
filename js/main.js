@@ -9,8 +9,6 @@ window.onload = () => {
   const itemBtn = document.getElementById("item");
   const magicBtn = document.getElementById("magic");
   const runBtn = document.getElementById("run");
-  //攻撃順
-  const turnDom = document.getElementById("turn");
 
   //味方追加
   let playerParty = [
@@ -85,7 +83,7 @@ window.onload = () => {
         }
         turnDom.innerHTML += `${turnDiv}${i + 1}.${span}${
           turn[i].name
-        }</spna>${current}</div>`;
+        }</spna> ${current}</div>`;
         current = "";
         turnDiv = "<div>";
       }

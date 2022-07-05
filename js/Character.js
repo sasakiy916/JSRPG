@@ -5,6 +5,7 @@ class Character {
   hitDir = 4; //射程
   moveDir = 2; //移動距離
   status = "alive"; //生死判定（alive,dead）
+  isPlayer = true; //プレイヤーか敵か
   constructor(name, img, hp = 10, mp = 10, atk = 10, speed = 10) {
     this.name = name;
     this.img = img;
@@ -32,5 +33,9 @@ class Character {
     return false;
   };
 }
-class Enemy extends Character { }
-class Player extends Character { }
+class Enemy extends Character {
+  isPlayer = false;
+}
+class Player extends Character {
+  isPlayer = true;
+}
